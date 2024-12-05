@@ -1,100 +1,82 @@
 "use client"
 
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { TrendingUp } from "lucide-react"
+import { Pie, PieChart } from "recharts"
 
-interface Activity {
-  name: string
-  hours: number
-  color: string
-}
-
-const activities: Activity[] = [
-  { name: "Sleep", hours: 7, color: "hsl(var(--muted))" },
-  { name: "Work", hours: 8, color: "hsl(var(--chart-1))" },
-  { name: "Exercise", hours: 1, color: "hsl(var(--chart-2))" },
-  { name: "Research", hours: 2, color: "hsl(var(--chart-3))" },
-  { name: "Reading", hours: 2, color: "hsl(var(--chart-4))" },
-  { name: "Meals & Breaks", hours: 3, color: "hsl(var(--chart-5))" },
-  { name: "Other", hours: 1, color: "hsl(var(--chart-6))" },
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+const chartData = [
+  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
+  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+  { browser: "other", visitors: 90, fill: "var(--color-other)" },
 ]
 
-const RADIAN = Math.PI / 180
-
-interface CustomizedLabelProps {
-  cx: number
-  cy: number
-  midAngle: number
-  innerRadius: number
-  outerRadius: number
-  percent: number
-  index: number
-}
-
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, index }: CustomizedLabelProps) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
-
-  return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {`${activities[index].name} `}
-    </text>
-  )
-}
+const chartConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  chrome: {
+    label: "Chrome",
+    color: "hsl(var(--chart-1))",
+  },
+  safari: {
+    label: "Safari",
+    color: "hsl(var(--chart-2))",
+  },
+  firefox: {
+    label: "Firefox",
+    color: "hsl(var(--chart-3))",
+  },
+  edge: {
+    label: "Edge",
+    color: "hsl(var(--chart-4))",
+  },
+  other: {
+    label: "Other",
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig
 
 export default function DailyActivityPieChart() {
   return (
-    <Card className="w-full max-w-3xl">
-      <CardHeader>
-        <CardTitle>Daily Activity Distribution</CardTitle>
-        <CardDescription>24-hour breakdown of activities</CardDescription>
+    <Card className="flex flex-col">
+      <CardHeader className="items-center pb-0">
+        <CardTitle>Pie Chart - Label</CardTitle>
+        <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 pb-0">
         <ChartContainer
-          config={Object.fromEntries(activities.map(activity => [
-            activity.name.toLowerCase(),
-            { label: activity.name, color: activity.color }
-          ]))}
-          className="h-[400px]"
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
         >
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-            <ChartTooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload as Activity
-                    return (
-                        <ChartTooltipContent>
-                        <div className="flex flex-col gap-1">
-                          <p className="font-semibold">{data.name}</p>
-                          <p>{`${data.hours} hour${data.hours > 1 ? 's' : ''}`}</p>
-                          <p>{`${((data.hours / 24) * 100).toFixed(1)}% of the day`}</p>
-                        </div>
-                      </ChartTooltipContent>
-                    )
-                  }
-                  return null
-                }}
-              />
-              <Pie
-                data={activities}
-                labelLine={true}
-                label={renderCustomizedLabel}
-                outerRadius={200}
-                
-                dataKey="hours"
-              >
-                {activities.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+            <Pie data={chartData} dataKey="visitors" label nameKey="browser" />
+          </PieChart>
         </ChartContainer>
       </CardContent>
+      <CardFooter className="flex-col gap-2 text-sm">
+        <div className="flex items-center gap-2 font-medium leading-none">
+          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+        </div>
+        <div className="leading-none text-muted-foreground">
+          Showing total visitors for the last 6 months
+        </div>
+      </CardFooter>
     </Card>
   )
 }
-
