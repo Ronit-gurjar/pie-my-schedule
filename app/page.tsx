@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Schedular from "@/components/schedular";
-import HourSchedularC from "@/components/hourSchedular";
-import HourLayout from "@/components/24hr-schedularC";
 
 export default function Home() {
   return (
@@ -12,9 +10,7 @@ export default function Home() {
 
     <Button>Click here</Button>
    </div>
-   
-    <Schedular/>
-    {/* <HourLayout/> */}
+   <Schedular/>
   </main>
   );
 }
