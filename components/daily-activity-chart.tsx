@@ -12,6 +12,7 @@ const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#a4de6c", "#d0ed57"
 const GRAY_COLOR = "#E5E7EB"; // Tailwind gray-300 equivalent
 
 const TOTAL_HOURS = 24;
+const DEGREES_PER_HOUR = 360 / TOTAL_HOURS; // 15 degrees per hour
 
 // Helper function to convert time to minutes
 const timeToMinutes = (time: string) => {
@@ -71,6 +72,13 @@ export default function DailyActivityPieChart({ data }: ActivityPieChartProps) {
   // Avoid rendering on the server
   if (!isMounted) return null;
 
+  // Calculate the start angle based on the first activity's startTime
+  const startTime = data[0]?.startTime || "00:00"; // Default to "00:00" if no data
+  const firstActivityStartMinutes = timeToMinutes(startTime);
+  const startAngle = 90 - (firstActivityStartMinutes / 60) * DEGREES_PER_HOUR; // Adjust based on the first activity's start time
+  console.log(firstActivityStartMinutes)
+  console.log(startAngle)
+
   return (
     <div className="absolute">
       <PieChart width={600} height={600}>
@@ -80,8 +88,8 @@ export default function DailyActivityPieChart({ data }: ActivityPieChartProps) {
           cy="50%"
           innerRadius={80}
           outerRadius={200}
-          startAngle={90} // Clockwise start
-          endAngle={-270} // Total 360 degrees in clockwise direction
+          startAngle={startAngle} // Dynamically calculated start angle
+          endAngle={startAngle - 360} // Ensure the full circle is used
           dataKey="value"
           label={(entry) => `${entry.name} (${entry.value.toFixed(1)}h)`} // Display duration in hours
         >
