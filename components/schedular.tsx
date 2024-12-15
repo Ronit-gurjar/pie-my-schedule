@@ -31,7 +31,7 @@ export default function Schedular(){
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex justify-center items-center">
-                <DailyActivityPieChart data={activityData} />;
+                <DailyActivityPieChart data={activityData} />
                 <HourLayout/>
             </CardContent>
         </Card>
