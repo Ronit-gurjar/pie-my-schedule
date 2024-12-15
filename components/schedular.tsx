@@ -13,8 +13,15 @@ import HourLayout from "./24hr-schedular";
 import DailyActivityPieChart from "./daily-activity-chart";
 
 export default function Schedular(){
+
+    const activityData = [
+        { activity: "Sleep", startTime: "23:00", endTime: "06:00" },
+        { activity: "Work", startTime: "09:00", endTime: "17:00" },
+        { activity: "Exercise", startTime: "18:00", endTime: "19:00" },
+      ];
+
     return (
-        <Card className="flex flex-col items-center justify-normal gap-60 h-fit m-4">
+        <Card className="flex flex-col items-center justify-center m-4">
             <CardHeader>
                 <CardTitle>
                 <div className="flex flex-row text-3xl font-bold gap-96">
@@ -24,7 +31,7 @@ export default function Schedular(){
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex justify-center items-center">
-                <DailyActivityPieChart/>
+                <DailyActivityPieChart data={activityData} />;
                 <HourLayout/>
             </CardContent>
         </Card>
